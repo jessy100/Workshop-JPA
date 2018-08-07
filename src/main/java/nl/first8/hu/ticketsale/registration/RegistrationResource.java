@@ -31,6 +31,7 @@ public class RegistrationResource {
 
             return ResponseEntity.ok().build();
         } catch (RuntimeException ex) {
+            System.out.println(ex.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }

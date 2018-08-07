@@ -26,7 +26,7 @@ public class RegistrationRepository {
      * @throws EntityExistsException if the entity already exists
      */
     public void insert(final Account account) {
-        throw new UnsupportedOperationException("Not supported yet!");
+        entityManager.persist(account);
     }
 
     /**
