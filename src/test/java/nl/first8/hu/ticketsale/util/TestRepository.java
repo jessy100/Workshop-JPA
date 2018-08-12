@@ -32,6 +32,7 @@ public class TestRepository {
     public Ticket createDefaultTicket(Account account, String artist, String location) {
         Concert concert = createDefaultConcert(artist, location);
         Ticket ticket = new Ticket(concert, account);
+
         entityManager.persist(ticket);
         return ticket;
     }

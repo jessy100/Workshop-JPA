@@ -32,7 +32,11 @@ public class SalesService {
         Optional<Concert> optConcert = venueRepository.findConcertById(concertId);
         if (optAccount.isPresent() && optConcert.isPresent()) {
             //TODO Create ticket for given account and concert
-            throw new UnsupportedOperationException();
+            Ticket ticketToCreate = new Ticket();
+            ticketToCreate.setAccount(optAccount.get());
+            ticketToCreate.setConcert(optConcert.get());
+
+            salesRepository.insert(ticketToCreate);
         } else {
             throw new RuntimeException("Unknown account Id " + accountId);
         }
