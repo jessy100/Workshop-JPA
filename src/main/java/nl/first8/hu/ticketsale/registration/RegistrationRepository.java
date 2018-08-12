@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -40,7 +42,7 @@ public class RegistrationRepository {
      * already an attached entity
      */
     Account update(Account account) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return entityManager.merge(account);
     }
 
     /**
@@ -51,7 +53,7 @@ public class RegistrationRepository {
      * {@link Optional#empty() empty} Optional if no Account could be identified
      * with the given <code>id</code>.
      */
-    public Optional<Account> findById(final Object id) { //TODO: implement the proper data type!
+    public Optional<Account> findById(final long id) { //TODO: implement the proper data type!
         return Optional.ofNullable(entityManager.find(Account.class, id));
     }
 
@@ -66,9 +68,10 @@ public class RegistrationRepository {
      */
     Optional<Account> findByEmailAddress(String emailAddress) {
         try{
-            Account a = entityManager.createQuery("SELEcT a from Account a where email_address = '"+ emailAddress+"'", Account.class).getSingleResult();
-            return Optional.of(a);
-        }catch (Exception e){
+            return Optional.of(entityManager.createQuery("SELECT a FROM Account a WHERE a.emailAddress =:emailAddress", Account.class)
+                    .setParameter("emailAddress", emailAddress)
+                    .getSingleResult());
+        }catch (NoResultException ex){
             return Optional.empty();
         }
 
