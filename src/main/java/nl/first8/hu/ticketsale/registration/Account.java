@@ -1,9 +1,6 @@
 package nl.first8.hu.ticketsale.registration;
-
 import java.io.Serializable;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +15,7 @@ public class Account implements Serializable {
 
     private String emailAddress;
 
-    //TODO: add a one-to-one relationship with AccountInfo
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private AccountInfo info;
 
     public Account(final String emailAddress) {

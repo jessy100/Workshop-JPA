@@ -2,6 +2,7 @@ package nl.first8.hu.ticketsale.registration;
 
 import java.util.List;
 import java.util.Optional;
+import javax.management.RuntimeErrorException;
 import javax.transaction.Transactional;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,10 @@ public class RegistrationService {
      * operation
      */
     public Account updateEmailAddress(final long id, @NonNull final String emailAddress) {
+        final Account UpdatingAccount = repository.findById(id).orElseThrow(() -> new RuntimeException("No account found with given id"));
+        UpdatingAccount.setEmailAddress(emailAddress);
 
-        //TODO: implement
-        throw new UnsupportedOperationException("Not supported yet!");
+        return repository.update(UpdatingAccount);
     }
     /**
      * Updates the AccountInfo of the Account identified by the given
@@ -47,10 +49,14 @@ public class RegistrationService {
      */
     public Account updateInfo(final long id, @NonNull final AccountInfo info) {
         //TODO: implement
-        throw new UnsupportedOperationException("Not supported yet!");
+        final Account UpdatingAccount = repository.findById(id).orElseThrow(() -> new RuntimeException("Account with given ID not found"));
+        UpdatingAccount.setInfo(info);
+
+        return repository.update(UpdatingAccount);
     }
 
-    public Optional<Account> getById(final long id) {
+
+    public Optional<Account> getById(@NonNull final long id) {
         return repository.findById(id);
     }
 

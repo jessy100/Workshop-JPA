@@ -59,7 +59,6 @@ public class RegistrationResource {
     public ResponseEntity<Account> putAccountInfo(@PathVariable("id") final Long id, @RequestBody final AccountInfo info) {
         try {
             final Account updatedAccount = service.updateInfo(id, info);
-
             return ResponseEntity.ok(updatedAccount);
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();

@@ -1,5 +1,4 @@
 package nl.first8.hu.ticketsale.registration;
-
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityExistsException;
@@ -52,7 +51,8 @@ public class RegistrationRepository {
      * {@link Optional#empty() empty} Optional if no Account could be identified
      * with the given <code>id</code>.
      */
-    public Optional<Account> findById(final Long id) {
+
+    public Optional<Account> findById(final long id) { //TODO: implement the proper data type!
         return Optional.ofNullable(entityManager.find(Account.class, id));
     }
 
@@ -73,6 +73,7 @@ public class RegistrationRepository {
         } catch (NoResultException ex) {
             return Optional.empty();
         }
+
     }
 
     /**
