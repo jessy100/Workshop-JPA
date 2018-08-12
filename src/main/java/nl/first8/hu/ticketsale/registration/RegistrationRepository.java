@@ -65,7 +65,13 @@ public class RegistrationRepository {
      * <code>emailAddress</code>.
      */
     Optional<Account> findByEmailAddress(String emailAddress) {
-        throw new UnsupportedOperationException("Not supported yet!");
+        try{
+            Account a = entityManager.createQuery("SELEcT a from Account a where email_address = '"+ emailAddress+"'", Account.class).getSingleResult();
+            return Optional.of(a);
+        }catch (Exception e){
+            return Optional.empty();
+        }
+
     }
 
     /**
