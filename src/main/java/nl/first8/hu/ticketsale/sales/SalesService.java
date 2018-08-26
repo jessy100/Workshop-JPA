@@ -46,6 +46,8 @@ public class SalesService {
         sale.setSellDate(timestamp);
 
         salesRepository.insert(sale);
+        addAuditTrail(account,sale);
+
     }
 
     public Optional<Sale> getSale(Long accountId, Long concertId) {
@@ -75,6 +77,12 @@ public class SalesService {
         } else {
             throw new RuntimeException("Unknown account Id " + accountId);
         }
+    }
+
+    public void addAuditTrail(Account account, Sale sale)
+    {
+        Audittrail audittrail = new Audittrail(account,sale);
+        salesRepository.insert(audittrail);
     }
 
 }
