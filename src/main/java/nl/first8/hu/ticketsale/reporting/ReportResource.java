@@ -1,5 +1,6 @@
 package nl.first8.hu.ticketsale.reporting;
 
+import nl.first8.hu.ticketsale.venue.Genre;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

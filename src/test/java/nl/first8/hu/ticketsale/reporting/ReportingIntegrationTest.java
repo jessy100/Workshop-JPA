@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.first8.hu.ticketsale.registration.Account;
 import nl.first8.hu.ticketsale.util.TestRepository;
+import nl.first8.hu.ticketsale.venue.Artist;
 import nl.first8.hu.ticketsale.venue.Concert;
+import nl.first8.hu.ticketsale.venue.Genre;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,9 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import sun.font.FontManagerNativeLibrary;
 
+import javax.persistence.GeneratedValue;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -46,21 +50,25 @@ public class ReportingIntegrationTest {
     @Test
     public void testReport() throws Exception {
 
-        Concert concertMetal1 = helper.createConcert("Five Finger Death Punch", "metal", "Utrecht");
-        Concert concertMetal2 = helper.createConcert("Disturbed", "metal", "Apeldoorn");
-        Concert concertElec= helper.createConcert("Pogo", "electronica", "Amsterdam");
+        Artist MetalArtist = helper.createArtist("Parkway Drive", Genre.METALCORE);
+        Artist ElectroArtist = helper.createArtist("Diplo", Genre.HOUSE);
+        Concert concertMetal1 = helper.createConcert(MetalArtist, "Utrecht");
+        Concert concertMetal2 = helper.createConcert(MetalArtist, "Apeldoorn");
+        Concert concertElec = helper.createConcert(ElectroArtist,  "Amsterdam");
+
         Account accountZeist = helper.createAccount("user@zeist.museum", "Zeist");
         Account accountNieuwegein = helper.createAccount("user@nieuwegein.museum", "Nieuwegein");
         Account accountHouten = helper.createAccount("user@houten.museum", "Houten");
+
         helper.createTicket(concertMetal1, accountZeist);
         helper.createTicket(concertMetal1, accountNieuwegein);
         helper.createTicket(concertMetal2, accountNieuwegein);
         helper.createTicket(concertElec, accountNieuwegein);
         helper.createTicket(concertElec, accountHouten);
 
-        String requestedGenre = "metal";
+        Genre requestedGenre = Genre.METALCORE;
         final MvcResult result = mvc.perform(
-                get("/report/location").param("genre", requestedGenre)
+                get("/report/location").param("genre", requestedGenre.name())
                         .accept(MediaType.APPLICATION_JSON_UTF8)
         ).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8)).andReturn();

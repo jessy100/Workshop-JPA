@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.first8.hu.ticketsale.registration.Account;
 import nl.first8.hu.ticketsale.util.TestRepository;
+import nl.first8.hu.ticketsale.venue.Artist;
 import nl.first8.hu.ticketsale.venue.Concert;
+import nl.first8.hu.ticketsale.venue.Genre;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +64,8 @@ public class TicketRepositoryIntegrationTest {
     public void testInsertTicket() throws Exception {
 
         Account account = testRepository.createDefaultAccount("f.dejong@first8.nl");
-        Concert concert = testRepository.createDefaultConcert("Parov Stellar", "Utrecht");
+        Artist arist = testRepository.createArtist("Parov Steller", Genre.GRINDCORE);
+        Concert concert = testRepository.createDefaultConcert(arist, "Utrecht");
 
 
         mvc.perform(
@@ -80,8 +83,10 @@ public class TicketRepositoryIntegrationTest {
     public void testGetTickets() throws Exception {
 
         Account account = testRepository.createDefaultAccount("f.dejong@first8.nl");
-        Ticket ticketGorillaz = testRepository.createDefaultTicket(account, "Gorillaz", "Utrecht");
-        Ticket ticketThieveryCo = testRepository.createDefaultTicket(account, "Thievery Cooperation", "Apeldoorn");
+        Artist Gorillaz = testRepository.createArtist("Gorillaz", Genre.HIPHOP);
+        Artist ThieveryCo = testRepository.createArtist("Tievery Cooperation", Genre.HIPHOP);
+        Ticket ticketGorillaz = testRepository.createDefaultTicket(account, Gorillaz, "Utrecht");
+        Ticket ticketThieveryCo = testRepository.createDefaultTicket(account, ThieveryCo, "Apeldoorn");
 
 
         MvcResult result = mvc.perform(
@@ -94,9 +99,9 @@ public class TicketRepositoryIntegrationTest {
 
         List<TicketDto> actualTickets = readTicketsResponse(result);
         assertEquals(2, actualTickets.size());
-        assertEquals(ticketGorillaz.getConcert().getArtist(), actualTickets.get(0).getArtist());
+        assertEquals(ticketGorillaz.getConcert().getArtist().getName(), actualTickets.get(0).getArtist());
         assertEquals(ticketGorillaz.getConcert().getLocation().getName(), actualTickets.get(0).getLocation());
-        assertEquals(ticketThieveryCo.getConcert().getArtist(), actualTickets.get(1).getArtist());
+        assertEquals(ticketThieveryCo.getConcert().getArtist().getName(), actualTickets.get(1).getArtist());
         assertEquals(ticketGorillaz.getConcert().getLocation().getName(), actualTickets.get(0).getLocation());
 
 
@@ -106,7 +111,8 @@ public class TicketRepositoryIntegrationTest {
     public void testInsertSale() throws Exception {
 
         Account account = testRepository.createDefaultAccount("t.poll@first8.nl");
-        Concert concert = testRepository.createDefaultConcert("Disturbed", "Verdedig, Enschede");
+        Artist Distrubed = testRepository.createArtist("distrubed", Genre.GRINDCORE);
+        Concert concert = testRepository.createDefaultConcert(Distrubed, "Verdedig, Enschede");
 
         MvcResult result = mvc.perform(
                 post("/sales/")
@@ -129,7 +135,8 @@ public class TicketRepositoryIntegrationTest {
     public void testInsertSaleWithoutPayment() throws Exception {
 
         Account account = testRepository.createDefaultAccount("t.poll@first8.nl");
-        Concert concert = testRepository.createDefaultConcert("Disturbed", "Verdedig, Enschede");
+        Artist Distrubed = testRepository.createArtist("distrubed", Genre.GRINDCORE);
+        Concert concert = testRepository.createDefaultConcert(Distrubed, "Verdedig, Enschede");
 
         mvc.perform(
                 post("/sales/")
